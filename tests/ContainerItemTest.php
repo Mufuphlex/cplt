@@ -43,4 +43,37 @@ class ContainerItemTest extends TestCase
         $item = new ContainerItem();
         $item->setPopularity($value);
     }
+
+    public function testSetGetAncestors()
+    {
+        $item = new ContainerItem();
+        $this->assertSame(array(), $item->getAncestors());
+        $ancestors = array(
+            't' => array('test'),
+        );
+        $item->setAncestors($ancestors);
+        $this->assertSame($ancestors, $item->getAncestors());
+    }
+
+    /**
+     * @dataProvider notArrayDataProvider
+     * @expectedException \PHPUnit_Framework_Error
+     * @expectedExceptionMessageRegExp /^Argument 1 passed to .+ must be of the type array,/
+     */
+    public function testSetAncestorsFailsOnNotArray($value)
+    {
+        $item = new ContainerItem();
+        $item->setAncestors($value);
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Can not redefine $ancestors
+     */
+    public function testSetAncestorsFailsOnRedefine()
+    {
+        $item = new ContainerItem();
+        $item->setAncestors(array('t' => array()));
+        $item->setAncestors(array());
+    }
 }

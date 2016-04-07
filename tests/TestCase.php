@@ -30,9 +30,25 @@ class TestCase extends \PHPUnit_Framework_TestCase
     public function notIntegerDataProvider()
     {
         return array(
-            array(''),
+            array('text'),
             array(1.0),
             array(array()),
+            array(new \stdClass()),
+            array(true),
+            array(null),
+            array(xml_parser_create()),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function notArrayDataProvider()
+    {
+        return array(
+            array('text'),
+            array(1.0),
+            array(1),
             array(new \stdClass()),
             array(true),
             array(null),

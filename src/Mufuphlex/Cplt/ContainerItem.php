@@ -76,7 +76,7 @@ class ContainerItem implements ContainerItemInterface
      */
     public function setAncestors(array $ancestors)
     {
-        if ($this->ancestors) {
+        if ($this->ancestors !== array()) {
             throw new \LogicException('Can not redefine $ancestors');
         }
 
