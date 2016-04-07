@@ -58,7 +58,7 @@ class ContainerItemTest extends TestCase
     /**
      * @dataProvider notArrayDataProvider
      * @expectedException \PHPUnit_Framework_Error
-     * @expectedExceptionMessageRegExp /^Argument 1 passed to .+ must be of the type array,/
+     * @expectedExceptionMessageRegExp /^Argument 1 passed to .+ must be (an|of the type) array,/
      */
     public function testSetAncestorsFailsOnNotArray($value)
     {
