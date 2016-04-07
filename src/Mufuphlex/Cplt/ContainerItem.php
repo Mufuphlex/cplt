@@ -23,6 +23,10 @@ class ContainerItem implements ContainerItemInterface
      */
     public function setValue($token)
     {
+        if (!is_string($token)) {
+            throw new \InvalidArgumentException('$token must be a string, '.gettype($token).' given');
+        }
+
         $this->value = $token;
         return $this;
     }
@@ -41,6 +45,10 @@ class ContainerItem implements ContainerItemInterface
      */
     public function setPopularity($popularity)
     {
+        if (!is_integer($popularity)) {
+            throw new \InvalidArgumentException('$popularity must be an integer, '.gettype($popularity).' given');
+        }
+
         $this->popularity = $popularity;
         return $this;
     }

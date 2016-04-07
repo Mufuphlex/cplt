@@ -5,7 +5,7 @@ namespace Mufuphlex\Tests\Cplt;
 use Mufuphlex\Cplt\Container;
 use Mufuphlex\Cplt\ContainerItem;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends TestCase
 {
     public function testAddToken()
     {
@@ -445,18 +445,5 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         }
 
         return $container;
-    }
-
-    public function notStringDataProvider()
-    {
-        return array(
-            array(1),
-            array(1.0),
-            array(array()),
-            array(new \stdClass()),
-            array(true),
-            array(null),
-            array(xml_parser_create()),
-        );
     }
 }
