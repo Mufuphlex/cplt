@@ -98,14 +98,10 @@ class ContainerTest extends TestCase
         $container = $this->makeSimilarTokensContainer();
         $result = $container->find('i');
 
-        $this->assertEquals(
-            array(
-                'i',
-                'iii',
-                'ii',
-            ),
-            $result
-        );
+        $this->assertCount(3, $result);
+        $this->assertEquals('i', $result[0]);
+        $this->assertContains('iii', $result);
+        $this->assertContains('ii', $result);
     }
 
     public function testFindCorrectTokens()
