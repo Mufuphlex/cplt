@@ -13,4 +13,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             Factory::makeDemo('', 80)
         );
     }
+
+    public function testMakeDemoCached()
+    {
+        $this->assertInstanceOf(
+            '\Mufuphlex\Cplt\Daemon\DaemonInterface',
+            Factory::makeDemo('', 80)
+        );
+    }
 }
