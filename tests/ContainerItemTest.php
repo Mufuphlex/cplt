@@ -68,7 +68,13 @@ class ContainerItemTest extends TestCase
             try {
                 $item->setAncestors($value);
             } catch (\TypeError $e) {
-                throw new \PHPUnit_Framework_Error('Argument 1 passed to method must be an array, but not');
+                throw new \PHPUnit_Framework_Error(
+                    'Argument 1 passed to method must be an array, but not',
+                    0,
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e
+                );
             }
         } else {
             $item->setAncestors($value);
