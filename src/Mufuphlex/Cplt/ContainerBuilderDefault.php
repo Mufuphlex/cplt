@@ -1,7 +1,8 @@
 <?php
 
-
 namespace Mufuphlex\Cplt;
+
+use Mufuphlex\Textonic\Tokenizer\TokenizerInterface;
 
 /**
  * Class ContainerBuilderDefault
@@ -9,8 +10,17 @@ namespace Mufuphlex\Cplt;
  */
 class ContainerBuilderDefault implements ContainerBuilderInterface
 {
-    /** @var \Mufuphlex\Textonic\Tokenizer\TokenizerInterface */
+    /** @var TokenizerInterface */
     protected $tokenizer;
+
+    /**
+     * ContainerBuilderDefault constructor.
+     * @param TokenizerInterface $tokenizer
+     */
+    public function __construct(TokenizerInterface $tokenizer)
+    {
+        $this->tokenizer = $tokenizer;
+    }
 
     /**
      * @param mixed $sourceData
