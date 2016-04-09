@@ -8,10 +8,11 @@
             "name": "AlexMirohsnikov"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
       "php":">=5.3",
-      "mufuphlex/textonic":">=0.1.1"
+      "mufuphlex/textonic":">=0.1.1",
+        "mufuphlex/sake": "dev-master"
     },
     "autoload": {
       "psr-4": {

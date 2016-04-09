@@ -4,9 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4dcd3ec326a75913095de24f9e659580",
-    "content-hash": "ccc008c4bdd69f20e3b9fbc0dee3f28f",
+    "hash": "bd6fdd982f1974d36fbcea5a46041d7e",
+    "content-hash": "c4e271be0557a10687ac9ea540f12c08",
     "packages": [
+        {
+            "name": "mufuphlex/sake",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Mufuphlex/sake.git",
+                "reference": "3f1adfa09468e68284636765973354bfb79e2467"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Mufuphlex/sake/zipball/3f1adfa09468e68284636765973354bfb79e2467",
+                "reference": "3f1adfa09468e68284636765973354bfb79e2467",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mufuphlex\\": "src/Mufuphlex/",
+                    "Mufuphlex\\Tests\\Sake\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "AlexMirohsnikov"
+                }
+            ],
+            "time": "2016-04-09 12:02:59"
+        },
         {
             "name": "mufuphlex/textonic",
             "version": "0.1.1",
@@ -1189,8 +1227,10 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "mufuphlex/sake": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
