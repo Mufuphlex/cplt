@@ -72,8 +72,7 @@ class ContainerItemTest extends TestCase
                     'Argument 1 passed to method must be an array, but not',
                     0,
                     $e->getFile(),
-                    $e->getLine(),
-                    $e
+                    $e->getLine()
                 );
             }
         } else {
