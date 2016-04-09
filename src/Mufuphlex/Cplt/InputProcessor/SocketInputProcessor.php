@@ -18,9 +18,11 @@ class SocketInputProcessor implements InputProcessorInterface
      * SocketInputProcessor constructor.
      * @param ContainerInterface $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container = null)
     {
-        $this->container = $container;
+        if ($container !== null) {
+            $this->container = $container;
+        }
     }
 
     /**
