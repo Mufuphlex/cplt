@@ -60,7 +60,17 @@ class SocketInputProcessor implements InputProcessorInterface
             $result['r'] = $data;
         }
 
-        $result['p'] = implode("\t", array(strtr($normalInput, array("\t" => ' ')), count($result['r']), (int)$cache, (microtime(true) - $ts), number_format(memory_get_usage(), null, null, ' ')));
+        $result['p'] = implode(
+            "\t",
+            array(
+                strtr($normalInput, array("\t" => ' ')),
+                count($result['r']),
+                (int)$cache,
+                (microtime(true) - $ts),
+                number_format(memory_get_usage(), null, null, ' '),
+            )
+        );
+
         return json_encode($result);
     }
 
