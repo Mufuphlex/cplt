@@ -1,10 +1,10 @@
 <?php
 
-namespace Mufuphlex\Cplt;
+namespace Mufuphlex\Cplt\Daemon;
 
 /**
  * Interface DaemonInterface
- * @package Mufuphlex\Cplt
+ * @package Mufuphlex\Cplt\Daemon
  */
 interface DaemonInterface
 {
