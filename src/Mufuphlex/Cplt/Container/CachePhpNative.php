@@ -38,6 +38,7 @@ class CachePhpNative implements CacheInterface
         }
 
         if ($this->storage[$key]['e'] && (time() > $this->storage[$key]['e'])) {
+            unset($this->storage[$key]);
             return null;
         }
 
