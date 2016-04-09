@@ -10,7 +10,7 @@ php:
 
 branches:
   except:
-    - /^\d\.\d/
+    - /^(release\/|hotfix\/)?\d\.\d/
 
 install:
   - composer install --no-dev
