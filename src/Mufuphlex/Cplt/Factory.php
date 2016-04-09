@@ -2,6 +2,8 @@
 
 namespace Mufuphlex\Cplt;
 
+use Mufuphlex\Cplt\Container\CachePhpNative;
+use Mufuphlex\Cplt\Container\DecoratorCached;
 use Mufuphlex\Cplt\Daemon\DaemonInterface;
 use Mufuphlex\Cplt\Daemon\SocketDaemon;
 use Mufuphlex\Cplt\InputProcessor\SocketInputProcessor;
@@ -17,15 +19,25 @@ class Factory
 {
     /**
      * @param string $text
-     * @param $port
+     * @param int $port
      * @return DaemonInterface
      */
     public static function makeDemo($text, $port)
     {
         $container = static::makeContainer($text);
-        $socketListener = static::makeSocketListener($container, $port);
-        $daemon = static::makeDaemon($socketListener);
-        return $daemon;
+        return static::getDaemonWithContainerOnPort($container, $port);
+    }
+
+    /**
+     * @param string $text
+     * @param int $port
+     * @return DaemonInterface
+     */
+    public static function makeDemoCached($text, $port)
+    {
+        $container = static::makeContainer($text);
+        $container = new DecoratorCached($container, new CachePhpNative());
+        return static::getDaemonWithContainerOnPort($container, $port);
     }
 
     /**
@@ -61,5 +73,17 @@ class Factory
         $inputProcessor = new SocketInputProcessor($container);
         $socketListener->setInputProcessor($inputProcessor);
         return $socketListener;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @param int $port
+     * @return DaemonInterface
+     */
+    private static function getDaemonWithContainerOnPort(ContainerInterface $container, $port)
+    {
+        $socketListener = static::makeSocketListener($container, $port);
+        $daemon = static::makeDaemon($socketListener);
+        return $daemon;
     }
 }
