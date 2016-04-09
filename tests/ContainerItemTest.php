@@ -58,12 +58,26 @@ class ContainerItemTest extends TestCase
     /**
      * @dataProvider notArrayDataProvider
      * @expectedException \PHPUnit_Framework_Error
-     * @expectedExceptionMessageRegExp /^Argument 1 passed to .+ must be (an|of the type) array,/
+     * @expectedExceptionMessageRegExp /^Argument 1 passed to .+ must be (an( instance of)?|of the type) array,/
      */
     public function testSetAncestorsFailsOnNotArray($value)
     {
         $item = new ContainerItem();
-        $item->setAncestors($value);
+
+        if (class_exists('\TypeError')) {
+            try {
+                $item->setAncestors($value);
+            } catch (\TypeError $e) {
+                throw new \PHPUnit_Framework_Error(
+                    'Argument 1 passed to method must be an array, but not',
+                    0,
+                    $e->getFile(),
+                    $e->getLine()
+                );
+            }
+        } else {
+            $item->setAncestors($value);
+        }
     }
 
     /**
