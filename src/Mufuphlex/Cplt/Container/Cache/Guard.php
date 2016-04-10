@@ -11,7 +11,12 @@ class Guard implements GuardInterface
 {
     /** @var CacheInterface */
     private $cache;
+
+    /** @var int */
     private $maxVolume = 0;
+
+    /** @var HitManagerInterface */
+    private $hitManager;
 
     /**
      * @return bool
@@ -22,10 +27,14 @@ class Guard implements GuardInterface
             return true;
         }
 
-        if ($this->cache->getVolume() <= $this->maxVolume) {
+        $diff = $this->maxVolume - $this->cache->getVolume();
+
+        if ($diff >= 0) {
             return true;
         }
 
+        \Mufuphlex\Logger::log('Oversize: '.$diff.'. Need to do smth');
+        $this->cleanup();
         return false;
     }
 
@@ -44,6 +53,20 @@ class Guard implements GuardInterface
     }
 
     /**
+     * @param HitManagerInterface $hitManager
+     * @return mixed
+     */
+    public function setHitManager(HitManagerInterface $hitManager)
+    {
+        if ($this->hitManager !== null) {
+            throw new \LogicException('Can not redefine $hitManager');
+        }
+
+        $this->hitManager = $hitManager;
+        return $this;
+    }
+
+    /**
      * @param int $volume
      * @return $this
      */
@@ -51,5 +74,25 @@ class Guard implements GuardInterface
     {
         $this->maxVolume = $volume;
         return $this;
+    }
+
+    private function cleanup()
+    {
+        if (!$this->hitManager) {
+            return false;
+        }
+
+        $keys = $this->hitManager->getLessPopularKeys(5);  //@TODO num of keys basing on size distribution
+
+        if (!$keys) {
+            var_dump($this->cache);
+            return false;
+        }
+
+        print_r($keys);
+
+        foreach ($keys as $key) {
+            $this->cache->delete($key);
+        }
     }
 }

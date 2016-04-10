@@ -24,4 +24,10 @@ interface HitManagerInterface
      * @return $this
      */
     public function clear();
+
+    /**
+     * @param int $sliceSize
+     * @return array
+     */
+    public function getLessPopularKeys($sliceSize);
 }

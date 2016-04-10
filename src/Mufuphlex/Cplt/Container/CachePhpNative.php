@@ -30,12 +30,16 @@ class CachePhpNative implements CacheInterface
      * @param GuardInterface $guard
      * @param int $defaultExpirationTime
      */
-    public function __construct(HitManagerInterface $hitManager, GuardInterface $guard, $defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
+    public function __construct(HitManagerInterface $hitManager = null, GuardInterface $guard = null, $defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
     {
         $this->hitManager = $hitManager;
         $this->guard = $guard;
         $this->defaultExpirationTime = $defaultExpirationTime;
-        $this->guard->setCache($this);
+
+        if ($this->guard) {
+            $this->guard->setCache($this);
+            $this->hitManager && $this->guard->setHitManager($this->hitManager);
+        }
     }
 
     /**
@@ -51,7 +55,9 @@ class CachePhpNative implements CacheInterface
             'e' => ($expirationTime ? time() + $expirationTime : $this->defaultExpirationTime),
         );
 
-        $this->guard->check();
+        $ts = -microtime(true);
+        $this->guard && $this->guard->check();
+        $this->log('check finished, '.(microtime(true) + $ts));
         return $this;
     }
 
@@ -61,17 +67,24 @@ class CachePhpNative implements CacheInterface
      */
     public function get($key)
     {
+        $ts = -microtime(true);
         if (!isset($this->storage[$key])) {
             return null;
         }
+//        $this->log((microtime(true) + $ts).' - isset');
+        $ts = -microtime(true);
 
         if ($this->storage[$key]['e'] && (time() > $this->storage[$key]['e'])) {
             unset($this->storage[$key]);
-            $this->hitManager->remove($key);
+            $this->hitManager && $this->hitManager->remove($key);
             return null;
         }
 
-        $this->hitManager->inc($key);
+//        $this->log((microtime(true) + $ts).' - expire');
+
+        $this->hitManager && $this->hitManager->inc($key);
+//        $this->log('HIT from '.count($this->storage).' V '.$this->getVolume().' T '.(memory_get_usage(true)));
+        $this->log('HIT from '.count($this->storage));
         return $this->storage[$key]['d'];
     }
 
@@ -83,7 +96,7 @@ class CachePhpNative implements CacheInterface
     {
         if (isset($this->storage[$key])) {
             unset($this->storage[$key]);
-            $this->hitManager->remove($key);
+            $this->hitManager && $this->hitManager->remove($key);
         }
     }
 
@@ -94,7 +107,7 @@ class CachePhpNative implements CacheInterface
     public function clear()
     {
         $this->storage = array();
-        $this->hitManager->clear();
+        $this->hitManager && $this->hitManager->clear();
         return $this;
     }
 
@@ -104,5 +117,10 @@ class CachePhpNative implements CacheInterface
     public function getVolume()
     {
         return strlen(serialize($this->storage));
+    }
+
+    private function log($msg)
+    {
+        \Mufuphlex\Logger::log($msg);
     }
 }

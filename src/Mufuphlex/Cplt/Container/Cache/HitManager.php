@@ -55,6 +55,17 @@ class HitManager implements HitManagerInterface
     }
 
     /**
+     * @param int $sliceSize
+     * @return array
+     */
+    public function getLessPopularKeys($sliceSize)
+    {
+        asort($this->hitsCounter);
+        $keys = array_keys($this->hitsCounter);
+        return array_slice($keys, 0, $sliceSize);
+    }
+
+    /**
      * @param string $key
      */
     private function incHitCounter($key)
