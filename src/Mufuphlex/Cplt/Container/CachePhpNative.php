@@ -1,6 +1,7 @@
 <?php
 
 namespace Mufuphlex\Cplt\Container;
+use Mufuphlex\Cplt\Container\Cache\HitManagerInterface;
 
 /**
  * Class CachePhpNative
@@ -8,8 +9,31 @@ namespace Mufuphlex\Cplt\Container;
  */
 class CachePhpNative implements CacheInterface
 {
+    const DEFAULT_EXPIRATION_TIME = 0;
+
     /** @var array */
     private $storage = array();
+
+    private $guard;
+
+    /** @var HitManagerInterface */
+    private $hitManager;
+
+    /** @var int */
+    private $defaultExpirationTime;
+
+    /**
+     * CachePhpNative constructor.
+     * @param HitManagerInterface $hitManager
+     * @param null $guard
+     * @param int $defaultExpirationTime
+     */
+    public function __construct(HitManagerInterface $hitManager, $guard = null, $defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
+    {
+        $this->hitManager = $hitManager;
+        $this->guard = $guard;
+        $this->defaultExpirationTime = $defaultExpirationTime;
+    }
 
     /**
      * @param string $key
@@ -21,7 +45,7 @@ class CachePhpNative implements CacheInterface
     {
         $this->storage[$key] = array(
             'd' => $value,
-            'e' => ($expirationTime ? time() + $expirationTime : 0),
+            'e' => ($expirationTime ? time() + $expirationTime : $this->defaultExpirationTime),
         );
 
         return $this;
@@ -39,9 +63,11 @@ class CachePhpNative implements CacheInterface
 
         if ($this->storage[$key]['e'] && (time() > $this->storage[$key]['e'])) {
             unset($this->storage[$key]);
+            $this->hitManager->remove($key);
             return null;
         }
 
+        $this->hitManager->inc($key);
         return $this->storage[$key]['d'];
     }
 
@@ -53,6 +79,7 @@ class CachePhpNative implements CacheInterface
     {
         if (isset($this->storage[$key])) {
             unset($this->storage[$key]);
+            $this->hitManager->remove($key);
         }
     }
 
@@ -63,6 +90,7 @@ class CachePhpNative implements CacheInterface
     public function clear()
     {
         $this->storage = array();
+        $this->hitManager->clear();
         return $this;
     }
 }
