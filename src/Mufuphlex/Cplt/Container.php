@@ -14,9 +14,10 @@ class Container implements ContainerInterface
 
     /**
      * @param string $token
+     * @param string $namespace
      * @return $this
      */
-    public function addToken($token)
+    public function addToken($token, $namespace = '')
     {
         if (!is_string($token)) {
             throw new \InvalidArgumentException('$token must be a string, '.gettype($token).' given');
@@ -28,7 +29,7 @@ class Container implements ContainerInterface
             array_pop($letters);
         }
 
-        $destination = &$this->getFinalDestination($letters, $token, true);
+        $destination = &$this->getFinalDestination($letters, $token, $namespace, true);
         $destination[$token]++;
         arsort($destination);
 
@@ -36,18 +37,21 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @param string $namespace
      * @return array
      */
-    public function getData()
+    public function getData($namespace = '')
     {
-        return $this->data;
+        $namespace = $this->getCurrentNamespace($namespace);
+        return (isset($this->data[$namespace]) ? $this->data[$namespace] : array());
     }
 
     /**
      * @param string $term
+     * @param string $namespace
      * @return array
      */
-    public function find($term)
+    public function find($term, $namespace = '')
     {
         $letters = str_split($term);
         $lastLetter = (
@@ -56,7 +60,7 @@ class Container implements ContainerInterface
             null
         );
 
-        $termContainer = $this->getFinalDestination($letters, $term);
+        $termContainer = $this->getFinalDestination($letters, $term, $namespace);
         $termContainer = $this->filterTermContainer($termContainer, $term, $lastLetter);
         $result = $this->findInSubContainer($termContainer);
 
@@ -100,13 +104,14 @@ class Container implements ContainerInterface
     /**
      * @param array $letters
      * @param string $token
+     * @param $namespace
      * @param bool $createIfNotExists
      * @return array|ContainerItem
      * @TODO Split this method
      */
-    private function &getFinalDestination(array $letters, $token, $createIfNotExists = false)
+    private function &getFinalDestination(array $letters, $token, $namespace, $createIfNotExists = false)
     {
-        $destination = &$this->data;
+        $destination = &$this->getCurrentNamespaceData($namespace);
 
         foreach ($letters as $letter) {
             if ($destination instanceof ContainerItem) {
@@ -173,5 +178,33 @@ class Container implements ContainerInterface
         }
 
         return $termContainer;
+    }
+
+    /**
+     * @param string $namespace
+     * @return string
+     */
+    private function getCurrentNamespace($namespace)
+    {
+        if (!$namespace) {
+            return 0;
+        }
+
+        return $namespace;
+    }
+
+    /**
+     * @param string $namespace
+     * @return array
+     */
+    private function &getCurrentNamespaceData($namespace)
+    {
+        $namespace = $this->getCurrentNamespace($namespace);
+
+        if (!isset($this->data[$namespace])) {
+            $this->data[$namespace] = array();
+        }
+
+        return $this->data[$namespace];
     }
 }

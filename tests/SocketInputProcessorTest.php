@@ -68,6 +68,34 @@ class SocketInputProcessorTest extends \PHPUnit_Framework_TestCase
         static::assertNull($array['r']);
     }
 
+    public function testProcessWithNameSpace()
+    {
+        $input = 't';
+        $namespace = 'animals';
+        $token = 'tiger';
+
+        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container
+            ->expects(static::once())
+            ->method('find')
+            ->with($input, $namespace)
+            ->willReturn(array($token));
+
+        $inputProcessor = new SocketInputProcessor($container);
+        $result = $inputProcessor->process(implode('|', array($input, $namespace)));
+
+        static::assertJson($result);
+        $array = json_decode($result, true);
+        static::assertArrayKeys($array);
+        static::assertEquals(
+            array(
+                $token,
+            ),
+            $array['r']
+        );
+        static::assertNull($array['e']);
+    }
+
     /**
      * @param array $array
      */

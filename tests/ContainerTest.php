@@ -3,6 +3,7 @@
 namespace Mufuphlex\Tests\Cplt;
 
 use Mufuphlex\Cplt\Container;
+use Mufuphlex\Cplt\ContainerInterface;
 use Mufuphlex\Cplt\ContainerItem;
 
 class ContainerTest extends TestCase
@@ -426,6 +427,19 @@ class ContainerTest extends TestCase
         }
     }
 
+    public function testNamespace()
+    {
+        $tokenNamespaceA = 'cup';
+        $tokenNamespaceB = 'egg';
+
+        $container = new Container();
+        $container->addToken($tokenNamespaceA, 'a');
+        $container->addToken($tokenNamespaceB, 'b');
+
+        $this->assertContainerNamespace($container, 'a', $tokenNamespaceA);
+        $this->assertContainerNamespace($container, 'b', $tokenNamespaceB);
+    }
+
     private function makeSimilarTokensContainer()
     {
         $tokens = array(
@@ -441,5 +455,20 @@ class ContainerTest extends TestCase
         }
 
         return $container;
+    }
+
+    private function assertContainerNamespace(ContainerInterface $container, $namespace, $token)
+    {
+        $data = $container->getData($namespace);
+        $this->assertEquals(
+            array(
+                $token[0] => array(
+                    $token[1] => array(
+                        $token => 1,
+                    )
+                )
+            ),
+            $data
+        );
     }
 }
