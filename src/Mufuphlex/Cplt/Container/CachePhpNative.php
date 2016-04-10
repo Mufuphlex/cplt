@@ -1,6 +1,7 @@
 <?php
 
 namespace Mufuphlex\Cplt\Container;
+use Mufuphlex\Cplt\Container\Cache\GuardInterface;
 use Mufuphlex\Cplt\Container\Cache\HitManagerInterface;
 
 /**
@@ -14,6 +15,7 @@ class CachePhpNative implements CacheInterface
     /** @var array */
     private $storage = array();
 
+    /** @var GuardInterface */
     private $guard;
 
     /** @var HitManagerInterface */
@@ -25,14 +27,15 @@ class CachePhpNative implements CacheInterface
     /**
      * CachePhpNative constructor.
      * @param HitManagerInterface $hitManager
-     * @param null $guard
+     * @param GuardInterface $guard
      * @param int $defaultExpirationTime
      */
-    public function __construct(HitManagerInterface $hitManager, $guard = null, $defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
+    public function __construct(HitManagerInterface $hitManager, GuardInterface $guard, $defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
     {
         $this->hitManager = $hitManager;
         $this->guard = $guard;
         $this->defaultExpirationTime = $defaultExpirationTime;
+        $this->guard->setCache($this);
     }
 
     /**
@@ -48,6 +51,7 @@ class CachePhpNative implements CacheInterface
             'e' => ($expirationTime ? time() + $expirationTime : $this->defaultExpirationTime),
         );
 
+        $this->guard->check();
         return $this;
     }
 
@@ -92,5 +96,13 @@ class CachePhpNative implements CacheInterface
         $this->storage = array();
         $this->hitManager->clear();
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVolume()
+    {
+        return strlen(serialize($this->storage));
     }
 }

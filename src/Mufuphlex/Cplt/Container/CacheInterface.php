@@ -33,4 +33,9 @@ interface CacheInterface
      * @return mixed
      */
     public function clear();
+
+    /**
+     * @return int
+     */
+    public function getVolume();
 }
