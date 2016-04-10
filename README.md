@@ -1,7 +1,6 @@
 # mufuphlex cplt
 [![Build Status](https://travis-ci.org/Mufuphlex/cplt.svg?branch=master)](https://travis-ci.org/Mufuphlex/cplt)
 [![Latest Stable Version](https://poser.pugx.org/mufuphlex/cplt/v/stable)](https://packagist.org/packages/mufuphlex/cplt)
-[![Latest Unstable Version](https://poser.pugx.org/mufuphlex/cplt/v/unstable)](https://packagist.org/packages/mufuphlex/cplt)
 [![License](https://poser.pugx.org/mufuphlex/cplt/license)](https://packagist.org/packages/mufuphlex/cplt)
 
 Lightweight autocomplete container.
