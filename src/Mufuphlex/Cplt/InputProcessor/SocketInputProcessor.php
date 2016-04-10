@@ -58,7 +58,7 @@ class SocketInputProcessor implements InputProcessorInterface
         if (!$normalInput) {
             $result['e'] = 'Empty input';
         } else {
-            $data = $this->container->find($normalInput);
+            $data = $this->find($normalInput);
             $result['r'] = $data;
         }
 
@@ -85,5 +85,22 @@ class SocketInputProcessor implements InputProcessorInterface
         $term = trim($term, " \t\r\n");
         $term = mb_strtolower($term, 'utf-8');
         return $term;
+    }
+
+    /**
+     * @param string $normalInput
+     * @return array
+     */
+    private function find($normalInput)
+    {
+        $namespace = '';
+        $parts = explode('|', $normalInput);
+        $term = $parts[0];
+
+        if (count($parts) === 2) {
+            $namespace = $parts[1];
+        }
+
+        return $this->container->find($term, $namespace);
     }
 }
