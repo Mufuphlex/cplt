@@ -16,6 +16,9 @@ class DecoratorCached implements ContainerInterface
     /** @var CacheInterface */
     private $cache;
 
+    /** @var string */
+    private $cacheKey = '';
+
     /**
      * DecoratorCached constructor.
      * @param ContainerInterface $container
@@ -25,40 +28,55 @@ class DecoratorCached implements ContainerInterface
     {
         $this->container = $container;
         $this->cache = $cache;
+        $this->cacheKey = uniqid();
     }
 
     /**
      * @param string $token
+     * @param string $namespace
      * @return $this
      */
-    public function addToken($token)
+    public function addToken($token, $namespace = '')
     {
-        $this->container->addToken($token);
+        $this->container->addToken($token, $namespace);
         return $this;
     }
 
     /**
+     * @param string $namespace
      * @return array
      */
-    public function getData()
+    public function getData($namespace = '')
     {
-        return $this->container->getData();
+        return $this->container->getData($namespace);
     }
 
     /**
      * @param string $term
+     * @param string $namespace
      * @return array
      */
-    public function find($term)
+    public function find($term, $namespace = '')
     {
-        $cache = $this->cache->get($term);
+        $key = $this->makeKey($term, $namespace);
+        $cache = $this->cache->get($key);
 
         if ($cache !== null) {
             return $cache;
         }
 
-        $result = $this->container->find($term);
-        $this->cache->set($term, $result);
+        $result = $this->container->find($term, $namespace);
+        $this->cache->set($key, $result);
         return $result;
+    }
+
+    /**
+     * @param string $term
+     * @param string $namespace
+     * @return string mixed
+     */
+    private function makeKey($term, $namespace)
+    {
+        return implode('_', array($this->cacheKey, $namespace, $term));
     }
 }
