@@ -9,6 +9,12 @@ use Mufuphlex\Cplt\Container\CacheInterface;
  */
 class Guard implements GuardInterface
 {
+    /** How many keys to consider on each single cleanup */
+    const CLEANUP_FRACTION = 0.1;
+
+    /** How many times the volume difference must be multiplied for preventive cleanup */
+    const CLEANUP_SIZE_ALLOWANCE = 3;
+
     /** @var CacheInterface */
     private $cache;
 
@@ -27,14 +33,24 @@ class Guard implements GuardInterface
             return true;
         }
 
-        $diff = $this->maxVolume - $this->cache->getVolume();
+        $count = $this->cache->getCount();
+
+        if ($count === 0) {
+            return true;
+        }
+
+        $volume = $this->cache->getVolume();
+        $diff = $this->maxVolume - $volume;
+
+        \Mufuphlex\Logger::log(
+            'Cache size '.$volume.'; diff: '.$diff.'; cnt: '.($count).'; avg key size: '.round($volume / $count, 2)
+        );
 
         if ($diff >= 0) {
             return true;
         }
 
-        \Mufuphlex\Logger::log('Oversize: '.$diff.'. Need to do smth');
-        $this->cleanup();
+        $this->cleanup($diff);
         return false;
     }
 
@@ -76,16 +92,23 @@ class Guard implements GuardInterface
         return $this;
     }
 
-    private function cleanup()
+    /**
+     * @param int $diff
+     * @return bool
+     */
+    private function cleanup($diff)
     {
         if (!$this->hitManager) {
             return false;
         }
 
-        $keys = $this->hitManager->getLessPopularKeys(5);  //@TODO num of keys basing on size distribution
+        //@TODO Implement strategies - count and cleanup
+        $numOfKeys = $this->getCountOfKeysToBeCleaned($diff);
+        $keys = $this->hitManager->getLessPopularKeys($numOfKeys);
 
         if (!$keys) {
-            var_dump($this->cache);
+            \Mufuphlex\Logger::log('No suitable keys from hitManager');
+            //@TODO Partial dichotomy cleanup is required
             return false;
         }
 
@@ -94,5 +117,16 @@ class Guard implements GuardInterface
         foreach ($keys as $key) {
             $this->cache->delete($key);
         }
+    }
+
+    /**
+     * @param int $diff
+     * @return int
+     */
+    private function getCountOfKeysToBeCleaned($diff)
+    {
+        $avgKeyVolume = $this->cache->getVolume() / $this->cache->getCount();
+        $numOfKeysToBeCleaned = ceil(abs($diff / $avgKeyVolume));
+        return (round($numOfKeysToBeCleaned * static::CLEANUP_SIZE_ALLOWANCE));
     }
 }

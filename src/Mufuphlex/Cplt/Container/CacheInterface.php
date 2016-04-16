@@ -38,4 +38,9 @@ interface CacheInterface
      * @return int
      */
     public function getVolume();
+
+    /**
+     * @return int
+     */
+    public function getCount();
 }

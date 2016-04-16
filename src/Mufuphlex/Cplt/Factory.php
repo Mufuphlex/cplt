@@ -39,7 +39,7 @@ class Factory
     {
         $container = static::makeContainer($text);
         $guard = new Guard();
-        $guard->setMaxVolume(50000);
+        $guard->setMaxVolume(1.75*1024*1024);
         $hitManager = new HitManager();
 //        $guard = null;
 //        $hitManager = null;

@@ -50,14 +50,21 @@ class CachePhpNative implements CacheInterface
      */
     public function set($key, $value, $expirationTime = 0)
     {
+        if ($this->guard) {
+            $ts = -microtime(true);
+            $check = $this->guard->check();
+            $this->log('check finished, ' . (microtime(true) + $ts));
+
+            if (!$check) {
+                return $this;
+            }
+        }
+
         $this->storage[$key] = array(
             'd' => $value,
             'e' => ($expirationTime ? time() + $expirationTime : $this->defaultExpirationTime),
         );
 
-        $ts = -microtime(true);
-        $this->guard && $this->guard->check();
-        $this->log('check finished, '.(microtime(true) + $ts));
         return $this;
     }
 
@@ -67,12 +74,9 @@ class CachePhpNative implements CacheInterface
      */
     public function get($key)
     {
-        $ts = -microtime(true);
         if (!isset($this->storage[$key])) {
             return null;
         }
-//        $this->log((microtime(true) + $ts).' - isset');
-        $ts = -microtime(true);
 
         if ($this->storage[$key]['e'] && (time() > $this->storage[$key]['e'])) {
             unset($this->storage[$key]);
@@ -80,10 +84,7 @@ class CachePhpNative implements CacheInterface
             return null;
         }
 
-//        $this->log((microtime(true) + $ts).' - expire');
-
         $this->hitManager && $this->hitManager->inc($key);
-//        $this->log('HIT from '.count($this->storage).' V '.$this->getVolume().' T '.(memory_get_usage(true)));
         $this->log('HIT from '.count($this->storage));
         return $this->storage[$key]['d'];
     }
@@ -117,6 +118,14 @@ class CachePhpNative implements CacheInterface
     public function getVolume()
     {
         return strlen(serialize($this->storage));
+    }
+
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+        return count($this->storage);
     }
 
     private function log($msg)

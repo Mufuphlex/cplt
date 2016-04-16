@@ -66,7 +66,11 @@ class DecoratorCached implements ContainerInterface
         }
 
         $result = $this->container->find($term, $namespace);
-        $this->cache->set($key, $result);
+
+        if (!empty($result)) {
+            $this->cache->set($key, $result);
+        }
+
         return $result;
     }
 
