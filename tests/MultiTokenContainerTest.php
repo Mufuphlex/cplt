@@ -4,7 +4,7 @@ namespace Mufuphlex\Tests\Cplt;
 
 use Mufuphlex\Cplt\MultiTokenContainer;
 
-class MultiTokenContainerTest extends \PHPUnit_Framework_TestCase
+class MultiTokenContainerTest extends TestCase
 {
     public function testAddAndFindComplexToken()
     {
@@ -29,5 +29,15 @@ class MultiTokenContainerTest extends \PHPUnit_Framework_TestCase
             ),
             $result
         );
+    }
+
+    /**
+     * @dataProvider notStringDataProvider
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddTokenThrowsException($token)
+    {
+        $container = new MultiTokenContainer();
+        $container->addToken($token);
     }
 }
