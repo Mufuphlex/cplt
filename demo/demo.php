@@ -65,6 +65,11 @@ function getNamespacedDemoDaemon($port)
         }
     }
 
+    return getContainerDaemon($container, $port);
+}
+
+function getContainerDaemon($container, $port)
+{
     $socketListener = new SocketListener('127.0.0.1', $port);
     $inputProcessor = new SocketInputProcessor($container);
     $socketListener->setInputProcessor($inputProcessor);

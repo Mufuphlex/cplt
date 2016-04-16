@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mufuphlex\Cplt;
 
 /**
@@ -81,7 +80,7 @@ class Container implements ContainerInterface
         $result = array();
 
         foreach ($subContainer as $key => $value) {
-            if (is_integer($value)) {   // it's just a token and its popularity
+            if (is_numeric($value)) {   // it's just a token and its popularity
                 $result[$key] = $value;
                 continue;
             }
@@ -109,7 +108,7 @@ class Container implements ContainerInterface
      * @return array|ContainerItem
      * @TODO Split this method
      */
-    private function &getFinalDestination(array $letters, $token, $namespace, $createIfNotExists = false)
+    protected function &getFinalDestination(array $letters, $token, $namespace, $createIfNotExists = false)
     {
         $destination = &$this->getCurrentNamespaceData($namespace);
 
