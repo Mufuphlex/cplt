@@ -5,7 +5,7 @@ namespace Mufuphlex\Tests\Cplt;
 use Mufuphlex\Cplt\Container\Cache\CleanupStrategy\Popularity;
 use Mufuphlex\Tests\Cplt\Dummies\NotMeasurableCacheDummy;
 
-class CleanupStrategyPopularityTest extends \PHPUnit_Framework_TestCase
+class CleanupStrategyPopularityTest extends CacheTestCase
 {
     public function testCleanup()
     {
@@ -19,7 +19,7 @@ class CleanupStrategyPopularityTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanupFailsOnNotMeasurableCache()
     {
-        $hitManager = $this->getHitManager();
+        $hitManager = $this->getHitManagerMock();
         $strategy = new Popularity($hitManager);
         $cache = new NotMeasurableCacheDummy();
         $checkStrategy = static::createMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategy\Volume');
@@ -32,21 +32,16 @@ class CleanupStrategyPopularityTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanupFailsOnNotVolumeStrategy()
     {
-        $hitManager = $this->getHitManager();
+        $hitManager = $this->getHitManagerMock();
         $strategy = new Popularity($hitManager);
         $cache = $this->getCacheInitialMock();
         $checkStrategy = static::createMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategyInterface');
         $strategy->cleanup($cache, $checkStrategy);
     }
 
-    private function getHitManager()
-    {
-        return static::createMock('\Mufuphlex\Cplt\Container\Cache\HitManagerInterface');
-    }
-
     private function cleanupFalse()
     {
-        $hitManager = $this->getHitManager();
+        $hitManager = $this->getHitManagerMock();
         $hitManager
             ->expects(static::once())
             ->method('getLessPopularKeys')
@@ -61,7 +56,7 @@ class CleanupStrategyPopularityTest extends \PHPUnit_Framework_TestCase
 
     private function cleanupTrue()
     {
-        $hitManager = $this->getHitManager();
+        $hitManager = $this->getHitManagerMock();
         $hitManager
             ->expects(static::once())
             ->method('getLessPopularKeys')
@@ -92,11 +87,6 @@ class CleanupStrategyPopularityTest extends \PHPUnit_Framework_TestCase
             ->willReturn(1);
 
         return $cache;
-    }
-
-    private function getCacheInitialMock()
-    {
-        return static::getMockBuilder('\Mufuphlex\Cplt\Container\CachePhpNative')->disableOriginalConstructor()->getMock();
     }
 
     private function getCheckStrategy()
