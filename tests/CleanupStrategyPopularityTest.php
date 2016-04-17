@@ -22,7 +22,7 @@ class CleanupStrategyPopularityTest extends CacheTestCase
         $hitManager = $this->getHitManagerMock();
         $strategy = new Popularity($hitManager);
         $cache = new NotMeasurableCacheDummy();
-        $checkStrategy = static::createMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategy\Volume');
+        $checkStrategy = static::getMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategy\Volume');
         $strategy->cleanup($cache, $checkStrategy);
     }
 
@@ -35,7 +35,7 @@ class CleanupStrategyPopularityTest extends CacheTestCase
         $hitManager = $this->getHitManagerMock();
         $strategy = new Popularity($hitManager);
         $cache = $this->getCacheInitialMock();
-        $checkStrategy = static::createMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategyInterface');
+        $checkStrategy = static::getMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategyInterface');
         $strategy->cleanup($cache, $checkStrategy);
     }
 
@@ -91,7 +91,7 @@ class CleanupStrategyPopularityTest extends CacheTestCase
 
     private function getCheckStrategy()
     {
-        $checkStrategy = static::createMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategy\Volume');
+        $checkStrategy = static::getMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategy\Volume');
         $checkStrategy
             ->expects(static::once())
             ->method('getMaxVolume')

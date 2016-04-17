@@ -11,13 +11,13 @@ class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
     {
         $token = 'token';
 
-        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
         $container
             ->expects(static::once())
             ->method('addToken')
             ->with($token);
 
-        $cache = static::createMock('\Mufuphlex\Cplt\Container\CacheInterface');
+        $cache = static::getMock('\Mufuphlex\Cplt\Container\CacheInterface');
 
         $container = new DecoratorCached($container, $cache);
         $container->addToken($token);
@@ -25,12 +25,12 @@ class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
 
     public function testGetData()
     {
-        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
         $container
             ->expects(static::once())
             ->method('getData');
 
-        $cache = static::createMock('\Mufuphlex\Cplt\Container\CacheInterface');
+        $cache = static::getMock('\Mufuphlex\Cplt\Container\CacheInterface');
 
         $container = new DecoratorCached($container, $cache);
         $container->getData();
@@ -43,7 +43,7 @@ class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
             'tokenizer',
         );
 
-        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
 
         $container
             ->expects(static::once())

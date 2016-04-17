@@ -49,12 +49,12 @@ class GuardAbstractTest extends \PHPUnit_Framework_TestCase
 
     private function getCache()
     {
-        return static::createMock('\Mufuphlex\Cplt\Container\CacheInterface');
+        return static::getMock('\Mufuphlex\Cplt\Container\CacheInterface');
     }
 
     private function getCleanupStrategy()
     {
-        return static::createMock('\Mufuphlex\Cplt\Container\Cache\CleanupStrategyInterface');
+        return static::getMock('\Mufuphlex\Cplt\Container\Cache\CleanupStrategyInterface');
     }
 
     private function falseCheckStrategy()
@@ -71,7 +71,7 @@ class GuardAbstractTest extends \PHPUnit_Framework_TestCase
 
     private function getCheckStrategy($return)
     {
-        $strategy = static::createMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategyInterface');
+        $strategy = static::getMock('\Mufuphlex\Cplt\Container\Cache\CheckStrategyInterface');
         $strategy
             ->expects(static::once())
             ->method('check')
