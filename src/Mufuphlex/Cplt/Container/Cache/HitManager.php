@@ -8,13 +8,22 @@ namespace Mufuphlex\Cplt\Container\Cache;
  */
 class HitManager implements HitManagerInterface
 {
-    const TIMER_OFFSET = 1500000000;
-
     /** @var array */
     private $hitsCounter = array();
 
     /** @var array */
     private $hitsTimer = array();
+
+    /** @var int */
+    private $timerOffset = 0;
+
+    /**
+     * HitManager constructor.
+     */
+    public function __construct()
+    {
+        $this->timerOffset = time();
+    }
 
     /**
      * @param string $key
@@ -82,6 +91,6 @@ class HitManager implements HitManagerInterface
      */
     private function updateTimer($key)
     {
-        $this->hitsTimer[$key] = time() - static::TIMER_OFFSET;
+        $this->hitsTimer[$key] = time() - $this->timerOffset;
     }
 }

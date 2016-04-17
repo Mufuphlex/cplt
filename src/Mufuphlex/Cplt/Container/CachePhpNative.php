@@ -101,9 +101,4 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
     {
         return count($this->storage);
     }
-
-    private function log($msg)
-    {
-        \Mufuphlex\Logger::log($msg);
-    }
 }
