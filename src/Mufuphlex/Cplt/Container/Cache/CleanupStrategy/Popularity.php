@@ -44,7 +44,6 @@ class Popularity implements CleanupStrategyInterface
         $keys = $this->hitManager->getLessPopularKeys($numOfKeys);
 
         if (!$keys) {
-            \Mufuphlex\Logger::log('No suitable keys from hitManager');
             //@TODO Partial dichotomy cleanup is required
             return false;
         }
