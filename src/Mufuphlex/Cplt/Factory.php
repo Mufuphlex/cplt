@@ -2,6 +2,8 @@
 
 namespace Mufuphlex\Cplt;
 
+use Mufuphlex\Cplt\Container\Cache\DecoratorGuarded;
+use Mufuphlex\Cplt\Container\Cache\DecoratorHitManaged;
 use Mufuphlex\Cplt\Container\Cache\Guard;
 use Mufuphlex\Cplt\Container\Cache\HitManager;
 use Mufuphlex\Cplt\Container\CachePhpNative;
@@ -38,13 +40,13 @@ class Factory
     public static function makeDemoCached($text, $port)
     {
         $container = static::makeContainer($text);
-        $guard = new Guard();
-        $guard->setMaxVolume(1.75*1024*1024);
         $hitManager = new HitManager();
-//        $guard = null;
-//        $hitManager = null;
-
-        $container = new DecoratorCached($container, new CachePhpNative($hitManager, $guard));
+        $cache = new CachePhpNative();
+        $cache = new DecoratorHitManaged($cache, $hitManager);
+        $size = 40*1024*1024;
+        $guard = new Guard\HitManagedGuard($cache, $hitManager, (int)$size);
+        $cache = new DecoratorGuarded($cache, $guard);
+        $container = new DecoratorCached($container, $cache);
         return static::getDaemonWithContainerOnPort($container, $port);
     }
 

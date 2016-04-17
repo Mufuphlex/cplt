@@ -15,9 +15,6 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
     /** @var array */
     private $storage = array();
 
-    /** @var GuardInterface */
-    private $guard;
-
     /** @var HitManagerInterface */
     private $hitManager;
 
@@ -26,20 +23,11 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
 
     /**
      * CachePhpNative constructor.
-     * @param HitManagerInterface $hitManager
-     * @param GuardInterface $guard
      * @param int $defaultExpirationTime
      */
-    public function __construct(HitManagerInterface $hitManager = null, GuardInterface $guard = null, $defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
+    public function __construct($defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
     {
-        $this->hitManager = $hitManager;
-        $this->guard = $guard;
         $this->defaultExpirationTime = $defaultExpirationTime;
-
-        if ($this->guard) {
-            $this->guard->setCache($this);
-            $this->hitManager && $this->guard->setHitManager($this->hitManager);
-        }
     }
 
     /**
@@ -50,16 +38,6 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
      */
     public function set($key, $value, $expirationTime = 0)
     {
-        if ($this->guard) {
-            $ts = -microtime(true);
-            $check = $this->guard->check();
-            $this->log('check finished, ' . (microtime(true) + $ts));
-
-            if (!$check) {
-                return $this;
-            }
-        }
-
         $this->storage[$key] = array(
             'd' => $value,
             'e' => ($expirationTime ? time() + $expirationTime : $this->defaultExpirationTime),
@@ -79,13 +57,11 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
         }
 
         if ($this->storage[$key]['e'] && (time() > $this->storage[$key]['e'])) {
-            unset($this->storage[$key]);
-            $this->hitManager && $this->hitManager->remove($key);
+            $this->delete($key);
             return null;
         }
 
-        $this->hitManager && $this->hitManager->inc($key);
-        $this->log('HIT from '.count($this->storage));
+//        $this->log('HIT '.$key);
         return $this->storage[$key]['d'];
     }
 
@@ -97,7 +73,6 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
     {
         if (isset($this->storage[$key])) {
             unset($this->storage[$key]);
-            $this->hitManager && $this->hitManager->remove($key);
         }
     }
 
@@ -108,7 +83,6 @@ class CachePhpNative implements CacheInterface, MeasurableCacheInterface
     public function clear()
     {
         $this->storage = array();
-        $this->hitManager && $this->hitManager->clear();
         return $this;
     }
 

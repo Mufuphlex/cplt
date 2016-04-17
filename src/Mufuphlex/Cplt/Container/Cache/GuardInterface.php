@@ -17,13 +17,13 @@ interface GuardInterface
     public function setCache(CacheInterface $cache);
 
     /**
+     * @param CleanupStrategyInterface $cleanupStrategy
+     * @return mixed
+     */
+    public function setCleanupStrategy(CleanupStrategyInterface $cleanupStrategy);
+
+    /**
      * @return mixed
      */
     public function check();
-
-    /**
-     * @param int $volume
-     * @return mixed
-     */
-    public function setMaxVolume($volume);
 }
