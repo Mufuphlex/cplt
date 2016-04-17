@@ -1,15 +1,34 @@
 <?php
 
 namespace Mufuphlex\Cplt\Container;
+use Mufuphlex\Cplt\Container\Cache\GuardInterface;
+use Mufuphlex\Cplt\Container\Cache\HitManagerInterface;
 
 /**
  * Class CachePhpNative
  * @package Mufuphlex\Cplt\Container
  */
-class CachePhpNative implements CacheInterface
+class CachePhpNative implements CacheInterface, MeasurableCacheInterface
 {
+    const DEFAULT_EXPIRATION_TIME = 0;
+
     /** @var array */
     private $storage = array();
+
+    /** @var HitManagerInterface */
+    private $hitManager;
+
+    /** @var int */
+    private $defaultExpirationTime;
+
+    /**
+     * CachePhpNative constructor.
+     * @param int $defaultExpirationTime
+     */
+    public function __construct($defaultExpirationTime = self::DEFAULT_EXPIRATION_TIME)
+    {
+        $this->defaultExpirationTime = $defaultExpirationTime;
+    }
 
     /**
      * @param string $key
@@ -21,7 +40,7 @@ class CachePhpNative implements CacheInterface
     {
         $this->storage[$key] = array(
             'd' => $value,
-            'e' => ($expirationTime ? time() + $expirationTime : 0),
+            'e' => ($expirationTime ? time() + $expirationTime : $this->defaultExpirationTime),
         );
 
         return $this;
@@ -38,10 +57,11 @@ class CachePhpNative implements CacheInterface
         }
 
         if ($this->storage[$key]['e'] && (time() > $this->storage[$key]['e'])) {
-            unset($this->storage[$key]);
+            $this->delete($key);
             return null;
         }
 
+//        $this->log('HIT '.$key);
         return $this->storage[$key]['d'];
     }
 
@@ -64,5 +84,21 @@ class CachePhpNative implements CacheInterface
     {
         $this->storage = array();
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVolume()
+    {
+        return strlen(serialize($this->storage));
+    }
+
+    /**
+     * @return int
+     */
+    public function getCount()
+    {
+        return count($this->storage);
     }
 }

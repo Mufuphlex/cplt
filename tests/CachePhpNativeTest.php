@@ -60,6 +60,28 @@ class CachePhpNativeTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($cache->get($key));
     }
 
+    public function testGetCount()
+    {
+        $cache = new CachePhpNative();
+        $this->assertSame(0, $cache->getCount());
+        $key = 'key';
+        $cache->set($key, 'value');
+        $this->assertSame(1, $cache->getCount());
+        $cache->delete($key);
+        $this->assertSame(0, $cache->getCount());
+    }
+
+    public function testGetVolume()
+    {
+        $cache = new CachePhpNative();
+        $this->assertSame(6, $cache->getVolume());
+        $key = 'key';
+        $cache->set($key, 'value');
+        $this->assertSame(54, $cache->getVolume());
+        $cache->delete($key);
+        $this->assertSame(6, $cache->getVolume());
+    }
+
     public function cacheDataProvider()
     {
         return array(array(
