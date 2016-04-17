@@ -8,7 +8,7 @@ use Mufuphlex\Cplt\Container\Cache\HitManagerInterface;
  * Class CachePhpNative
  * @package Mufuphlex\Cplt\Container
  */
-class CachePhpNative implements CacheInterface
+class CachePhpNative implements CacheInterface, MeasurableCacheInterface
 {
     const DEFAULT_EXPIRATION_TIME = 0;
 
