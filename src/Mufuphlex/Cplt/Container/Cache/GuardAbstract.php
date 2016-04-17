@@ -23,9 +23,9 @@ abstract class GuardAbstract implements GuardInterface
      * GuardAbstract constructor.
      * @param CacheInterface $cache
      */
-    public function __construct(CacheInterface $cache)
+    public function __construct(CacheInterface $cache = null)
     {
-        $this->cache = $cache;
+        $cache && $this->cache = $cache;
     }
 
     /**
@@ -49,7 +49,7 @@ abstract class GuardAbstract implements GuardInterface
     public function setCleanupStrategy(CleanupStrategyInterface $cleanupStrategy)
     {
         if ($this->cleanupStrategy !== null) {
-            throw new \RuntimeException('Can not redefine $cache');
+            throw new \RuntimeException('Can not redefine $cleanupStrategy');
         }
 
         $this->cleanupStrategy = $cleanupStrategy;
