@@ -50,7 +50,7 @@ class CheckStrategyVolumeTest extends TestCase
     public function testGetVolumeDiff()
     {
         $volume = mt_rand(100, 999);
-        $cache = static::createMock('\Mufuphlex\Cplt\Container\MeasurableCacheInterface');
+        $cache = $this->getCache();
         $cache
             ->expects(static::once())
             ->method('getVolume')
@@ -60,15 +60,83 @@ class CheckStrategyVolumeTest extends TestCase
 
         $strategy = new Volume($cache);
         $this->assertEquals(0, $strategy->getVolumeDiff());
-        
+
         $strategy->setMaxVolume($maxVolume);
         $this->assertEquals(($maxVolume - $volume), $strategy->getVolumeDiff());
     }
 
+    public function testCheck()
+    {
+        $this->falseCheck1();
+        $this->falseCheck2();
+        $this->falseCheck3();
+        $this->trueCheck();
+    }
+
     private function getStrategy()
     {
-        $cache = static::createMock('\Mufuphlex\Cplt\Container\MeasurableCacheInterface');
-        $strategy = new Volume($cache);
+        $strategy = new Volume($this->getCache());
         return $strategy;
+    }
+
+    private function getCache()
+    {
+        return static::createMock('\Mufuphlex\Cplt\Container\MeasurableCacheInterface');
+    }
+
+    private function falseCheck1()
+    {
+        $strategy = new Volume($this->getCache());
+        $this->assertFalse($strategy->check());
+    }
+
+    private function falseCheck2()
+    {
+        $cache = $this->getCache();
+        $cache
+            ->expects(static::once())
+            ->method('getCount')
+            ->willReturn(0);
+
+        $strategy = new Volume($cache);
+        $strategy->setMaxVolume(5);
+
+        $this->assertFalse($strategy->check());
+    }
+
+    private function falseCheck3()
+    {
+        $cache = $this->getCache();
+        $cache
+            ->expects(static::once())
+            ->method('getCount')
+            ->willReturn(1);
+        $cache
+            ->expects(static::once())
+            ->method('getVolume')
+            ->willReturn(1);
+
+        $strategy = new Volume($cache);
+        $strategy->setMaxVolume(5);
+
+        $this->assertFalse($strategy->check());
+    }
+
+    private function trueCheck()
+    {
+        $cache = $this->getCache();
+        $cache
+            ->expects(static::once())
+            ->method('getCount')
+            ->willReturn(1);
+        $cache
+            ->expects(static::once())
+            ->method('getVolume')
+            ->willReturn(6);
+
+        $strategy = new Volume($cache);
+        $strategy->setMaxVolume(5);
+
+        $this->assertTrue($strategy->check());
     }
 }
