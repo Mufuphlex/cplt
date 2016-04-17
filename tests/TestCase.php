@@ -6,7 +6,7 @@ namespace Mufuphlex\Tests\Cplt;
  * Class TestCase
  * @package Mufuphlex\Tests\Cplt
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return array
