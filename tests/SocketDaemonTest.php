@@ -8,7 +8,7 @@ class SocketDaemonTest extends \PHPUnit_Framework_TestCase
 {
     public function testRun()
     {
-        $socketListener = static::getMock('\Mufuphlex\Sake\SocketListenerInterface');
+        $socketListener = static::createMock('\Mufuphlex\Sake\SocketListenerInterface');
         $socketListener
             ->expects(static::once())
             ->method('run')

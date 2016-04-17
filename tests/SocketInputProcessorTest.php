@@ -12,14 +12,14 @@ class SocketInputProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetContainerFailsOnRedefine()
     {
-        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
         $inputProcessor = new SocketInputProcessor($container);
         $inputProcessor->setContainer($container);
     }
 
     public function testSetContainerDoesNotFail()
     {
-        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
         $inputProcessor = new SocketInputProcessor();
         $inputProcessor->setContainer($container);
         static::assertJson($inputProcessor->process('text'));
@@ -28,7 +28,7 @@ class SocketInputProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcess()
     {
         $input = 't';
-        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
         $container
             ->expects(static::once())
             ->method('find')
@@ -53,7 +53,7 @@ class SocketInputProcessorTest extends \PHPUnit_Framework_TestCase
     public function testProcessWithError()
     {
         $input = ' ';
-        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
         $container
             ->expects(static::never())
             ->method('find');
@@ -74,7 +74,7 @@ class SocketInputProcessorTest extends \PHPUnit_Framework_TestCase
         $namespace = 'animals';
         $token = 'tiger';
 
-        $container = static::getMock('\Mufuphlex\Cplt\ContainerInterface');
+        $container = static::createMock('\Mufuphlex\Cplt\ContainerInterface');
         $container
             ->expects(static::once())
             ->method('find')

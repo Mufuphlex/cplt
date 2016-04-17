@@ -21,14 +21,14 @@ class ContainerBuilderDefaultTest extends TestCase
      */
     public function testBuildFailsOnInvalidSourceData($sourceData)
     {
-        $tokenizer = static::getMock('\Mufuphlex\Textonic\Tokenizer\TokenizerInterface');
+        $tokenizer = static::createMock('\Mufuphlex\Textonic\Tokenizer\TokenizerInterface');
         $builder = new ContainerBuilderDefault($tokenizer);
         $builder->build($sourceData);
     }
 
     private function makeTokenizer()
     {
-        $tokenizer = static::getMock('\Mufuphlex\Textonic\Tokenizer\TokenizerInterface');
+        $tokenizer = static::createMock('\Mufuphlex\Textonic\Tokenizer\TokenizerInterface');
         $tokenizer
             ->expects(static::once())
             ->method('tokenize')
