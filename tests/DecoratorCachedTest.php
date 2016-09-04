@@ -2,7 +2,6 @@
 
 namespace Mufuphlex\Tests\Cplt;
 
-use Mufuphlex\Cplt\Container\CachePhpNative;
 use Mufuphlex\Cplt\Container\DecoratorCached;
 
 class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +16,7 @@ class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
             ->method('addToken')
             ->with($token);
 
-        $cache = static::getMock('\Mufuphlex\Cplt\Container\CacheInterface');
+        $cache = static::getMock('\Mufuphlex\Cache\CacheInterface');
 
         $container = new DecoratorCached($container, $cache);
         $container->addToken($token);
@@ -30,7 +29,7 @@ class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
             ->expects(static::once())
             ->method('getData');
 
-        $cache = static::getMock('\Mufuphlex\Cplt\Container\CacheInterface');
+        $cache = static::getMock('\Mufuphlex\Cache\CacheInterface');
 
         $container = new DecoratorCached($container, $cache);
         $container->getData();
@@ -51,7 +50,7 @@ class DecoratorCachedTest extends \PHPUnit_Framework_TestCase
             ->with($token)
             ->willReturn($result);
 
-        $container = new DecoratorCached($container, new CachePhpNative());
+        $container = new \Mufuphlex\Cplt\Container\DecoratorCached($container, new \Mufuphlex\Cplt\Container\Cache());
         $actualResult = $container->find($token);
         $this->assertEquals($result, $actualResult);
         $actualResult = $container->find($token);
