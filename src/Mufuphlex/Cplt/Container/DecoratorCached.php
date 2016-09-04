@@ -24,7 +24,7 @@ class DecoratorCached implements ContainerInterface
      * @param ContainerInterface $container
      * @param CacheInterface $cache
      */
-    public function __construct(ContainerInterface $container, CacheInterface $cache)
+    public function __construct(ContainerInterface $container, \Mufuphlex\Cache\CacheInterface $cache)
     {
         $this->container = $container;
         $this->cache = $cache;
