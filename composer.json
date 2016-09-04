@@ -2,7 +2,7 @@
     "name": "mufuphlex/cplt",
     "type": "library",
     "license": "GPL-3.0",
-    "version": "0.0.4",
+    "version": "0.1.0",
     "authors": [
         {
             "name": "AlexMirohsnikov"
@@ -12,7 +12,8 @@
     "require": {
       "php":">=5.3",
       "mufuphlex/textonic":">=0.1.1",
-        "mufuphlex/sake": "dev-master"
+        "mufuphlex/sake": "dev-master",
+        "mufuphlex/cache": "^0.0.1"
     },
     "autoload": {
       "psr-4": {
@@ -21,6 +22,6 @@
       }
     },
     "require-dev": {
-        "phpunit/phpunit": ">=5.3"
+        "phpunit/phpunit": "=5.3.5"
     }
 }
