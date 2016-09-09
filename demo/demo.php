@@ -1,6 +1,6 @@
 <?php
 
-use Mufuphlex\Cplt\Container\CachePhpNative;
+use Mufuphlex\Cache\CachePhpNative;
 use Mufuphlex\Cplt\Container\DecoratorCached;
 use Mufuphlex\Cplt\ContainerBuilderDefault;
 use Mufuphlex\Cplt\Daemon\DaemonInterface;
