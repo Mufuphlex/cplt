@@ -21,6 +21,8 @@ use Mufuphlex\Textonic\Tokenizer\TokenizerEn;
  */
 class Factory
 {
+    const DEFAULT_CACHE_SIZE = 41943040;   // 40*1024*1024 bytes
+
     /**
      * @param string $text
      * @param int $port
@@ -35,15 +37,15 @@ class Factory
     /**
      * @param string $text
      * @param int $port
+     * @param int $size
      * @return DaemonInterface
      */
-    public static function makeDemoCached($text, $port)
+    public static function makeDemoCached($text, $port, $size = self::DEFAULT_CACHE_SIZE)
     {
         $container = static::makeContainer($text);
         $hitManager = new HitManager();
         $cache = new Cache();
         $cache = new DecoratorHitManaged($cache, $hitManager);
-        $size = 40*1024*1024;
         $guard = new HitManagedGuard($cache, $hitManager, (int)$size);
         $cache = new DecoratorGuarded($cache, $guard);
         $container = new DecoratorCached($container, $cache);
